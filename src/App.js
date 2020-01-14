@@ -1,10 +1,11 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 
 import Filter from './components/Filter';
 import PersonForm from './components/PersonForm';
 import Persons from './components/Persons';
 
 import uuid from 'uuid';
+import axios from 'axios';
 
 const App = () => {
     const [persons, setPersons] = useState([]);
@@ -45,6 +46,16 @@ const App = () => {
         setFilter(event.target.value);
     };
 
+    const hook = () => {
+        console.log('effect');
+        axios.get('http://localhost:3001/persons').then(response => {
+            console.log('promise fulfilled');
+            setPersons(response.data);
+        });
+    };
+
+    useEffect(hook, []);
+
     return (
         <div>
             <h1>The Coolest React Phonebook!!!</h1>
@@ -56,7 +67,11 @@ const App = () => {
                 newNumber={newNumber}
                 addPerson={addPerson}
             />
-            <Persons persons={persons} filter={filter} />
+            {persons.length > 0 ? (
+                <Persons persons={persons} filter={filter} />
+            ) : (
+                <h1>boop</h1>
+            )}
         </div>
     );
 };
