@@ -7,12 +7,7 @@ import Persons from './components/Persons';
 import uuid from 'uuid';
 
 const App = () => {
-    const [persons, setPersons] = useState([
-        { id: uuid(), name: 'Arto Hellas', number: '040-123456' },
-        { id: uuid(), name: 'Ada Lovelace', number: '39-44-5323523' },
-        { id: uuid(), name: 'Dan Abramov', number: '12-43-234345' },
-        { id: uuid(), name: 'Mary Poppendieck', number: '39-23-6423122' }
-    ]);
+    const [persons, setPersons] = useState([]);
     const [newName, setNewName] = useState('');
     const [newNumber, setNewNumber] = useState('');
     const [filter, setFilter] = useState('');
