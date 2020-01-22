@@ -3,14 +3,19 @@ import React, { useState, useEffect } from 'react';
 import Filter from './components/Filter';
 import PersonForm from './components/PersonForm';
 import Persons from './components/Persons';
+import Alert from './components/Alert';
 
 import { getAll, create, remove, update } from './services/persons';
+
+import './styles/index.css';
 
 const App = () => {
     const [persons, setPersons] = useState([]);
     const [newName, setNewName] = useState('');
     const [newNumber, setNewNumber] = useState('');
     const [filter, setFilter] = useState('');
+    const [success, setSuccess] = useState(null);
+    const [error, setError] = useState(null);
 
     const addPerson = event => {
         event.preventDefault();
@@ -31,15 +36,28 @@ const App = () => {
                 update(person[0].id, {
                     name: newName,
                     number: newNumber
-                }).then(returnedPerson => {
-                    setPersons(
-                        persons.map(person =>
-                            person.id !== returnedPerson.id
-                                ? person
-                                : returnedPerson
-                        )
-                    );
-                });
+                })
+                    .then(returnedPerson => {
+                        setPersons(
+                            persons.map(person =>
+                                person.id !== returnedPerson.id
+                                    ? person
+                                    : returnedPerson
+                            )
+                        );
+                    })
+                    .catch(error => {
+                        setError(
+                            `${person[0].name} was already removed from the server!`
+                        );
+
+                        setTimeout(() => {
+                            setError(null);
+                            getAll().then(persons => {
+                                setPersons(persons);
+                            });
+                        }, 4000);
+                    });
             }
         } else {
             const person = {
@@ -51,6 +69,12 @@ const App = () => {
             create(person).then(person => {
                 setPersons(persons.concat(person));
             });
+
+            setSuccess(`${person.name} was added to the Phonebook!`);
+
+            setTimeout(() => {
+                setSuccess(null);
+            }, 4000);
         }
 
         setNewName('');
@@ -91,22 +115,26 @@ const App = () => {
         <div>
             <h1>The Coolest React Phonebook!!!</h1>
             <Filter handleFilter={handleFilter} />
-            <PersonForm
-                handleNameChange={handleNameChange}
-                handleNumberChange={handleNumberChange}
-                newName={newName}
-                newNumber={newNumber}
-                addPerson={addPerson}
-            />
-            {persons.length > 0 ? (
-                <Persons
-                    persons={persons}
-                    filter={filter}
-                    handleRemovePerson={handleRemovePerson}
+            <div>
+                <Alert message={success} className={'success'} />
+                <Alert message={error} className={'danger'} />
+                <PersonForm
+                    handleNameChange={handleNameChange}
+                    handleNumberChange={handleNumberChange}
+                    newName={newName}
+                    newNumber={newNumber}
+                    addPerson={addPerson}
                 />
-            ) : (
-                <h1>The Phonebook is empty!</h1>
-            )}
+                {persons.length > 0 ? (
+                    <Persons
+                        persons={persons}
+                        filter={filter}
+                        handleRemovePerson={handleRemovePerson}
+                    />
+                ) : (
+                    <h1>The Phonebook is empty!</h1>
+                )}
+            </div>
         </div>
     );
 };

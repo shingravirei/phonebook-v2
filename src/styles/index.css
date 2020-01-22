@@ -1,0 +1,20 @@
+.success {
+    color: green;
+    background-color: ivory;
+    font-size: 20px;
+    font-weight: bold;
+    border: green solid 2px;
+    border-radius: 5px;
+    padding: 5px;
+    display: inline-flex;
+}
+.danger {
+    color: red;
+    background-color: ivory;
+    font-size: 20px;
+    font-weight: bold;
+    border: red solid 2px;
+    border-radius: 5px;
+    padding: 5px;
+    display: inline-flex;
+}
